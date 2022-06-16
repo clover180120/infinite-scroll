@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { faker } from '@faker-js/faker';
-import { Photo, Info } from './components'
 import styled from 'styled-components';
-import default_avatar from './assets/avatar-svgrepo-com.svg';
 import ReactLoading from 'react-loading';
+import Person from './components/Person';
+
+const delay = (seconds: number) => new Promise((resolve) => setTimeout(() => resolve(true), seconds * 1000));
 
 const CardContainer = styled.div`
   display: grid;
@@ -13,7 +14,7 @@ const CardContainer = styled.div`
 
 const PersonCard = styled.div`
   width: 250px;
-	min-height: 350px;
+	min-height: 400px;
 	background-color: #fff;
   box-shadow: 0px 16px 12px 2px rgba(0, 0, 0, 0.3);
 	color: #3a3a3a;
@@ -27,18 +28,19 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 20px;
 `
 
-type Person = {
+export type PersonProps = {
   id: string,
   name: string,
   phone: string,
   address: string,
   birthdayDate: string,
   avatar: string,
-}
+};
 
-type CreatePersonFunc = () => Person
+type CreatePersonFunc = () => PersonProps;
 
 const createPerson: CreatePersonFunc = () => ({
   id: faker.datatype.uuid(),
@@ -46,34 +48,30 @@ const createPerson: CreatePersonFunc = () => ({
   phone: faker.phone.phoneNumber('501-###-###'),
   address: faker.address.city(),
   birthdayDate: faker.fake("{{date.birthdate}}"),
-  avatar: default_avatar,
+  avatar: faker.image.avatar(),
 })
 
-const createPersonCard = (person: Person, i: number) => {
-  const { avatar, name, phone, address, birthdayDate } = person;
+const createPersonCard = (person: PersonProps) => {
   return (
     <PersonCard key={person.id}>
-      <Photo avatar={avatar} index={i+1} />
-      <Info
-        name={name}
-        phone={phone}
-        address={address}
-        birthdayDate={birthdayDate}
+      <Person
+        {...person}
       />
     </PersonCard>
   )
 }
 
 function App() {
-  const [people, setPeople] = useState<Person[]>([]);
-  let [isLoading, setIsLoading] = useState<boolean>(false);
+  const [people, setPeople] = useState<PersonProps[]>([]);
+  let [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const appendOnPeople = () => {
-    const newPeople: Person[] = [];
+  const appendOnPeople = async () => {
+    const newPeople: PersonProps[] = [];
     for (let i = 1; i <= 10; i++) {
       newPeople.push(createPerson());
     }
-    setTimeout(() => setPeople([...people, ...newPeople]), 1000);
+    await delay(1);
+    setPeople([...people, ...newPeople]);
     setIsLoading(false);
   }
 
@@ -103,11 +101,11 @@ function App() {
   return (
     <>
       <CardContainer>
-        {people.map((person, i) => createPersonCard(person, i))}
+        {people.map((person, i) => createPersonCard(person))}
       </CardContainer>
-      {!isLoading &&
+      {isLoading &&
         <LoadingContainer>
-          <ReactLoading type={'spokes'} height={'100px'} width={'100px'} color={'#3a3a3a'}></ReactLoading>
+          <ReactLoading type={'bubbles'} height={'100px'} width={'100px'} color={'#514e4e'}></ReactLoading>
         </LoadingContainer>
       }
     </>
