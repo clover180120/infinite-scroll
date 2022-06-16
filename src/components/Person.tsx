@@ -2,15 +2,15 @@ import Info from './Info';
 import Photo from './Photo';
 import { PersonProps } from '../App';
 
-const Person = (person: PersonProps) => {
-  const { avatar, name, phone, address, birthdayDate } = person;
+const Person = (props: PersonProps) => {
+  const { avatar } = props;
   return (
     <>
       <Photo
         avatar={avatar}
       />
       <Info
-        {...person}
+        {...props}
       />
     </>
   )

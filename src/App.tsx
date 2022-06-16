@@ -51,9 +51,10 @@ const createPerson: CreatePersonFunc = () => ({
   avatar: faker.image.avatar(),
 })
 
-const createPersonCard = (person: PersonProps) => {
+const createPersonCard = (person: PersonProps, i: number) => {
   return (
     <PersonCard key={person.id}>
+      <h1>{i + 1}</h1>
       <Person
         {...person}
       />
@@ -79,7 +80,7 @@ function App() {
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     var windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
     var scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
-    if (scrollTop + windowHeight == scrollHeight) { 
+    if (scrollTop + windowHeight >= scrollHeight - 20) { 
       setIsLoading(true);
       fn();
     }
@@ -101,7 +102,7 @@ function App() {
   return (
     <>
       <CardContainer>
-        {people.map((person, i) => createPersonCard(person))}
+        {people.map((person, i) => createPersonCard(person, i))}
       </CardContainer>
       {isLoading &&
         <LoadingContainer>

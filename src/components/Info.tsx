@@ -14,20 +14,28 @@ const InfoBio = styled.div`
 	margin: 28px 0;
 `
 
+const Bio = ({ phone, address, birthdayDate }: PersonProps) => {
+  return (
+  <InfoBio>
+    <ul style={{ listStyleType: 'none', paddingLeft: '0' }}>
+      <li>Phone: {phone}</li>
+      <li>City: {address}</li>
+      <li>Birthday date: {new Date(birthdayDate).toLocaleDateString()}</li>
+    </ul>
+  </InfoBio>
+  )
+}
+
 const Info = (props: PersonProps) => {
-  const { name, phone, address, birthdayDate } = props;
+  const { name } = props;
   return (
     <CenterDiv>
       <InfoName>
         {name}
       </InfoName>
-      <InfoBio>
-        <ul style={{ listStyleType: 'none', paddingLeft: '0' }}>
-          <li>Phone: {phone}</li>
-          <li>City: {address}</li>
-          <li>Birthday date: {new Date(birthdayDate).toLocaleDateString()}</li>
-        </ul>
-      </InfoBio>
+      <Bio
+        {...props}
+      />
     </CenterDiv>
   )
 }
